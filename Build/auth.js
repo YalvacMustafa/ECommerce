@@ -24,7 +24,7 @@ const login = asyncErrorWrapper(async (req, res, next) => {
         return next (new Error("Lütfen bilgilerinizi tekrar kontrol ediniz.", 401));
     }
 
-    const user = await User.findOne({email}).select("password");
+    const user = await User.findOne({email}).select("+password");
     if (!comparePassword(password, user.password)) {
 
         return next (new Error("Lütfen bilgilerinizi tekrar kontrol ediniz.", 401));
@@ -47,4 +47,16 @@ const logout = asyncErrorWrapper(async(req, res, next) => {
     });
 });
 
-module.exports = {register, login, logout};
+const getUser = (req, res, next) => {
+
+    res.json({
+        success : true,
+        data : {
+
+            id : req.user.id,
+            name : req.user.name
+        },
+    });
+};
+
+module.exports = {register, login, logout, getUser};
