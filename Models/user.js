@@ -59,15 +59,20 @@ UserSchema.pre("save", async function (next){
     next();
 })
 
-UserSchema.post("save", function (error, next){
+UserSchema.pre("validate", function (next) {
 
-    if (error.code === 11000) {
+    const self = this;
+    this.constructor.findOne({ email : self.email })
+        .then(user => {
 
-        next (new Error("Bu email daha önce kullanılmış. Lütfen başka bir email deneyiniz."));
-    } else {
+            if (user) {
 
-        next();
-    }
+                const err = new Error("Bu email daha önce kullanılmış.Lütfen başka bir email deneyiniz.");
+                return next(err);
+            }
+            next();
+        })
+        .catch(err =>  next(err));
 });
 
 module.exports = mongoose.model("User", UserSchema);
