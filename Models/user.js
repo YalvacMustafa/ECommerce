@@ -32,7 +32,11 @@ const UserSchema = new Schema({
         minlength : 8,
         required : [true, "Lütfen Bir Parola Giriniz."],
         select : false,
-    },
+    },    
+}, 
+
+{timestamps : true
+
 });
 UserSchema.methods.JWTGenerateFromUser = function() {
 
